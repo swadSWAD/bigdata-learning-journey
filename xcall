@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# 判断参数个数
+if [ $# -lt 1 ]
+then
+    echo "Not Enough Arguement!"
+    exit;
+fi
+
+# 遍历集群所有机器
+for host in hadoop102 hadoop103 hadoop104
+do
+    echo ==================== $host ====================
+    # 在远程机器上执行命令 "$*"
+    ssh $host $*
+done
