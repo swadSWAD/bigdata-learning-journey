@@ -1,0 +1,14 @@
+-- 1. 创建普通表
+CREATE TABLE IF NOT EXISTS student(
+    id INT,
+    name STRING,
+    age INT
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
+
+-- 2. 创建分区表 (重点)
+CREATE TABLE log_partition(
+    url STRING
+)
+PARTITIONED BY (day STRING)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
