@@ -7,11 +7,12 @@
 | 阶段 | 内容 | 状态 | 对应目录 |
 |:---:|:---|:---:|:---|
 | 1 | 大数据概论：4V 特点、Hadoop 生态圈、行业分析 | ✅ | [docs/01-bigdata-overview.md](docs/01-bigdata-overview.md) |
-| 2 | HDFS：架构原理、Shell / Java API 操作、调优 | ✅ | [docs/02-hdfs.md](docs/02-hdfs.md) |
+| 2 | HDFS：架构原理、Shell 操作、生产调优 | ✅ | [docs/02-hdfs.md](docs/02-hdfs.md) |
 | 3 | YARN：调度策略、任务提交流程 | ✅ | [docs/03-yarn.md](docs/03-yarn.md) |
-| 4 | MapReduce：编程模型、WordCount 实战 | ✅ | [hadoop/wordcount](hadoop/wordcount) |
-| 5 | 集群运维：一键启停、批量分发脚本 | ✅ | [hadoop/scripts](hadoop/scripts) |
-| 6 | Hive：建表、加载、分区、窗口函数 | ✅ | [hive](hive) |
+| 4 | HDFS Java API：文件增删改查、用户权限 | ✅ | [hadoop/hdfs-api](hadoop/hdfs-api) |
+| 5 | MapReduce：编程模型、WordCount 实战 | ✅ | [hadoop/wordcount](hadoop/wordcount) |
+| 6 | 集群运维：一键启停、批量分发脚本 | ✅ | [hadoop/scripts](hadoop/scripts) |
+| 7 | Hive：建表、加载、分区、窗口函数 | ✅ | [hive](hive) |
 
 ## 目录结构
 
@@ -29,15 +30,22 @@
 │   │   ├── mapred-site.xml
 │   │   ├── yarn-site.xml
 │   │   └── workers
-│   ├── scripts/               # 运维脚本
+│   ├── scripts/               # Shell 运维脚本
 │   │   ├── myhadoop.sh        # 集群一键启停
 │   │   ├── jpsall.sh          # 查看所有节点进程
 │   │   ├── xcall.sh           # 批量执行命令
 │   │   ├── xsync.sh           # 批量分发文件
 │   │   └── xsu.sh             # 批量切换用户
-│   └── wordcount/             # MapReduce 实战
+│   ├── hdfs-api/              # 【Java】HDFS API 示例
+│   │   ├── pom.xml
+│   │   ├── run_hdfs_api.sh
+│   │   ├── README.md
+│   │   └── src/main/java/com/atguigu/hdfs/HdfsClient.java
+│   └── wordcount/             # 【Java】MapReduce 词频统计
+│       ├── pom.xml
+│       ├── run_wordcount.sh
 │       ├── input/word.txt
-│       └── run_wordcount.sh
+│       └── src/main/java/com/atguigu/mapreduce/wordcount/WordCount.java
 └── hive/                      # Hive 数据仓库实战
     ├── README.md
     ├── config/hive-site.xml
@@ -88,13 +96,25 @@ bash hadoop/scripts/myhadoop.sh status
 bash hadoop/scripts/myhadoop.sh stop
 ```
 
-### 3. 运行 WordCount
+### 3. 运行 HDFS Java API 示例
 
 ```bash
-bash hadoop/wordcount/run_wordcount.sh
+cd hadoop/hdfs-api
+bash run_hdfs_api.sh
 ```
 
-### 4. 运行 Hive 实战
+脚本会自动取 `hadoop classpath`、编译源码、运行示例。覆盖创建目录、上传下载、重命名、遍历、读写等 10 个操作。
+
+### 4. 运行 WordCount
+
+包含完整的 Mapper / Reducer / Driver 源码，脚本会编译打包后再提交任务：
+
+```bash
+cd hadoop/wordcount
+bash run_wordcount.sh
+```
+
+### 5. 运行 Hive 实战
 
 **在仓库根目录执行**（脚本内使用相对路径引用数据文件）：
 
@@ -126,7 +146,12 @@ hive -f hive/sql_scripts/03_dql_analysis.sql       # 查询分析
 - **列裁剪**：避免 `SELECT *`，只取需要的列
 - **数据倾斜处理**：加盐打散、map join、过滤无效 key
 
-完整内容见 [docs](docs) 目录。
+### HDFS Java API 两个易踩的坑
+
+- **获取 FileSystem 时如果不指定 URI 和用户**，且 classpath 里没有 `core-site.xml`，会**静默连到本地文件系统**——你以为写进了 HDFS，其实写到了本地磁盘
+- **HDFS 权限校验基于用户名，不是操作系统权限**。用 root 操作属主为 `atguigu` 的目录会直接报 `AccessControlException`
+
+完整内容见 [docs](docs) 目录和 [hadoop/README.md](hadoop/README.md)。
 
 ## 踩坑与说明
 
