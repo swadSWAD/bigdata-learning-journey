@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+    <!-- Hive 元数据存储在 MySQL -->
+    <property>
+        <name>javax.jdo.option.ConnectionURL</name>
+        <value>jdbc:mysql://hadoop102:3306/hive?useSSL=false&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=UTF-8</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionDriverName</name>
+        <value>com.mysql.cj.jdbc.Driver</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionUserName</name>
+        <value>root</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionPassword</name>
+        <value>YOUR_MYSQL_PASSWORD</value>
+    </property>
+
+    <!-- HDFS 上的数仓目录 -->
+    <property>
+        <name>hive.metastore.warehouse.dir</name>
+        <value>/user/hive/warehouse</value>
+    </property>
+
+    <!-- 执行引擎：小内存环境用 mr 更稳，资源充足可改为 spark -->
+    <property>
+        <name>hive.execution.engine</name>
+        <value>mr</value>
+    </property>
+
+    <!-- 命令行显示表头和当前库名，便于调试 -->
+    <property>
+        <name>hive.cli.print.header</name>
+        <value>true</value>
+    </property>
+    <property>
+        <name>hive.cli.print.current.db</name>
+        <value>true</value>
+    </property>
+</configuration>

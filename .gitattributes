@@ -1,0 +1,16 @@
+# 统一换行符：Linux 脚本必须为 LF，否则在服务器上执行会报 "bad interpreter: ^M"
+* text=auto eol=lf
+
+*.sh   text eol=lf
+*.sql  text eol=lf
+*.conf text eol=lf
+*.md   text eol=lf
+*.xml  text eol=lf
+*.txt  text eol=lf
+
+# 二进制文件不做换行符转换
+*.png binary
+*.jpg binary
+*.gz  binary
+*.zip binary
+*.jar binary
